@@ -1,2 +1,10 @@
 # nettoyeurs
 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
+
+<root>
+<STATUS>OK</STATUS>
+<PARAMS>
+<SESSION>487</SESSION>
+<SIGNATURE>1474997342</SIGNATURE>
+</PARAMS>
+</root>
