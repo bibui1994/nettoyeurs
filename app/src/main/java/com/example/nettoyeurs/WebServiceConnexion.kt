@@ -1,17 +1,15 @@
 package com.example.nettoyeurs
 
 import android.util.Log
-import java.io.UnsupportedEncodingException
 import java.net.URL
-import java.net.URLEncoder
 import javax.xml.parsers.DocumentBuilderFactory
 
 class WebServiceConnexion(val login: String, val mdpHash: String) {
     val TAG = "WSNewMessage"
 
-    fun call(): Boolean {
+    fun call(): ArrayList<String>? {
         if (mdpHash == null || login == null) {
-            return false
+            return null
         } else {
             println("login $login passwd $mdpHash  !")
             try {
@@ -27,13 +25,18 @@ class WebServiceConnexion(val login: String, val mdpHash: String) {
                 val xml = db.parse(`in`)
                 val nl = xml.getElementsByTagName("STATUS")
                 val nodeStatus = nl.item(0)
-                val status = nodeStatus.textContent
+                val status : String = nodeStatus.textContent
                 Log.d(TAG, "Thread new connection : status $status")
-                status.startsWith("OK")
+
+
+                if (status.startsWith("OK")){
+
+                }
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            return true
+            return null
         }
     }
 }
