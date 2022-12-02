@@ -1,13 +1,15 @@
 package com.example.nettoyeurs
 
 import android.util.Log
+import org.w3c.dom.Node
+import org.w3c.dom.NodeList
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
 class WebServiceConnexion(val login: String, val mdpHash: String) {
     val TAG = "WSNewMessage"
 
-    fun call(): ArrayList<String>? {
+    fun call(): ArrayList<Node>? {
         if (mdpHash == null || login == null) {
             return null
         } else {
@@ -23,15 +25,30 @@ class WebServiceConnexion(val login: String, val mdpHash: String) {
                 val db = dbf.newDocumentBuilder()
 
                 val xml = db.parse(`in`)
-                val nl = xml.getElementsByTagName("STATUS")
-                val nodeStatus = nl.item(0)
+                val nlStatus : NodeList = xml.getElementsByTagName("STATUS")
+                val nodeStatus : Node = nlStatus.item(0)
                 val status : String = nodeStatus.textContent
                 Log.d(TAG, "Thread new connection : status $status")
 
+                val params: ArrayList<Node> = ArrayList()
 
-                if (status.startsWith("OK")){
+                if (!status.startsWith("OK"))
+                    return null
 
+                val nlParams : NodeList = xml.getElementsByTagName("PARAMS")
+                val nodeParams : Node = nlParams.item(0)
+                val paramsXML : NodeList = nodeParams.childNodes
+
+                var len :Int? = paramsXML?.length
+                println("table paramsXML.size = $len")
+
+                for (i in 0..paramsXML.length-1) {
+                    println(paramsXML.item(i).textContent)
+                    params.add(paramsXML.item(i))
                 }
+                var lenParam :Int = params.size
+                println("table params.size = $lenParam")
+                return params
 
             } catch (e: Exception) {
                 e.printStackTrace()

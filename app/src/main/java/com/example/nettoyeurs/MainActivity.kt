@@ -5,8 +5,10 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import org.w3c.dom.Node
 import java.math.BigInteger
 import java.security.MessageDigest
+import kotlin.math.sign
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,13 +33,21 @@ class MainActivity : AppCompatActivity() {
 
                 Thread {
                     val ws = WebServiceConnexion(login, mdpHash)
-                    val ok: Boolean = ws.call()
-                    if (!ok) runOnUiThread {
+                    val ok: ArrayList<Node>? = ws.call()
+
+                    var taille : Int? = ok?.size
+                    println("table Ok.size is = $taille")
+
+                    if (taille == 0) runOnUiThread {
                         Toast.makeText(this,
                             "Erreur de la connexion",
                             Toast.LENGTH_LONG).show()
                     } else {
-                        runOnUiThread { println("SUCCESS") }
+                        runOnUiThread {
+                            var session = ok?.get(0)?.textContent?.toInt()
+                            var signature = ok?.get(1)?.textContent?.toInt()
+                            println("SUCCESS with session = $session and signature = $signature")
+                        }
                     }
                 }.start()
             }
