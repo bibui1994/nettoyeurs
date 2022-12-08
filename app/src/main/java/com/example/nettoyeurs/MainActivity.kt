@@ -1,5 +1,6 @@
 package com.example.nettoyeurs
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -18,6 +19,8 @@ class MainActivity : AppCompatActivity() {
         val btn_connexion = findViewById<View>(R.id.btn_connexion)
         val votre_id = findViewById<EditText>(R.id.votre_id)
         val mdp = findViewById<EditText>(R.id.mdp)
+
+        val intent =    Intent(this, creerNettoyeurActivity::class.java)
 
         btn_connexion.setOnClickListener{
             if(votre_id.text.isNullOrBlank()&&mdp.text.isNullOrBlank()){
@@ -50,6 +53,8 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }.start()
+
+                startActivity(intent)
             }
         }
     }
