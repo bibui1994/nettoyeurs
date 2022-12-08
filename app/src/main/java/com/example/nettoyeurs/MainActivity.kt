@@ -1,5 +1,6 @@
 package com.example.nettoyeurs
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,9 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import org.w3c.dom.Node
 import java.math.BigInteger
 import java.security.MessageDigest
-import kotlin.math.sign
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -20,8 +21,9 @@ class MainActivity : AppCompatActivity() {
         val votre_id = findViewById<EditText>(R.id.votre_id)
         val mdp = findViewById<EditText>(R.id.mdp)
 
-        val intent =    Intent(this, creerNettoyeurActivity::class.java)
-
+        val intent =    Intent(this@MainActivity, MenuActivity::class.java)
+        var session : String?
+        var signature: String?
         btn_connexion.setOnClickListener{
             if(votre_id.text.isNullOrBlank()&&mdp.text.isNullOrBlank()){
                 Toast.makeText(this,"please fill the required fields",Toast.LENGTH_SHORT).show()
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             else{
                 //envoyez et verifier id ,mdp sur server
                 var login : String = votre_id.text.toString() // hlewhe
-                var passwd : String = mdp.text.toString() // jd£m/4*sU&
+                //var passwd : String = mdp.text.toString() // jd£m/4*sU&
                 //hashing mdp
                 var mdpHash : String = mdp.text.toString().sha256()
                 println("login $login passwd $mdpHash  !")
@@ -47,14 +49,21 @@ class MainActivity : AppCompatActivity() {
                             Toast.LENGTH_LONG).show()
                     } else {
                         runOnUiThread {
-                            var session = ok?.get(0)?.textContent?.toInt()
-                            var signature = ok?.get(1)?.textContent?.toInt()
+                            session  = ok?.get(0)?.textContent?.trim()?.filter { it.isLetterOrDigit() }
+                            signature= ok?.get(1)?.textContent?.trim()?.filter { it.isLetterOrDigit() }
+
                             println("SUCCESS with session = $session and signature = $signature")
+                            intent.also {
+                                it.putExtra("EXTRA_SESSION",session)
+                                it.putExtra("EXTRA_SIGNATURE",signature)
+                                startActivity(it)
+                            }
                         }
                     }
                 }.start()
 
-                startActivity(intent)
+
+                //startActivity(intent)
             }
         }
     }
