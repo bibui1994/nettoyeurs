@@ -6,19 +6,21 @@ import org.w3c.dom.NodeList
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
-class WebServiceConnexion(val login: String, val mdpHash: String) {
-    val TAG = "WSConnection"
+class WebServiceStatNettoyeur(val session: Int,val signature: Int) {
+
+    val TAG = "WSStatNettoyeur"
 
     fun call(): ArrayList<Node>? {
-        if (mdpHash == null || login == null) {
+        if (session == null || signature == null) {
             return null
         } else {
-            println("login $login passwd $mdpHash  !")
             try {
                 val url =
-                    URL("http://51.68.124.144/nettoyeurs_srv/connexion.php?login=$login&passwd=$mdpHash")
+                    URL("http://51.68.124.144/nettoyeurs_srv/stats_nettoyeur.php?session=$session&signature=$signature")
                 val cnx = url.openConnection()
+                println("IT MUST WORK !!!!")
                 val `in` = cnx.getInputStream()
+                println("IT MUST WORK nowwwww!!!!")
                 val dbf = DocumentBuilderFactory.newInstance()
                 val db = dbf.newDocumentBuilder()
 
