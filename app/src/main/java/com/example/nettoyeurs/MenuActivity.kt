@@ -22,21 +22,26 @@ class MenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
         val btn_creer = findViewById<View>(R.id.btn_creer)
-        val btn_stat = findViewById<View>(R.id.btn_stat)
+        val btn_stat_nettoyeur = findViewById<View>(R.id.btn_stat_nettoyeur)
         val btn_stat_equipe = findViewById<View>(R.id.btn_stat_equipe)
 
-        var session : String?
-        var signature: String?
+        var session : String? = intent.getStringExtra("EXTRA_SESSION")
+        var signature: String? =intent.getStringExtra("EXTRA_SIGNATURE")
+
+        var session_Int:Int? = session?.toInt()
+        //var signature_Int:Int? = Integer.parseInt(signature)
+        var signature_Int:Int? = Integer.valueOf(signature)
+
         var nomNettoyeur: String?
+        var value : Int?
+        var pos_lon : Double?
+        var pos_lat : Double?
+        var status : String?
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         btn_creer.setOnClickListener{
-            session= intent.getStringExtra("EXTRA_SESSION")
-            var session_Int:Int? = session?.toInt()
-            signature =intent.getStringExtra("EXTRA_SIGNATURE")
-//            var signature_Int:Int? = signature?.toInt()
-            var signature_Int:Int? = Integer.parseInt(signature)
+
             println("EXTRA SESSION: " + session_Int + session_Int!!::class.simpleName )
             println("EXTRA SIGNATURE: " + signature_Int + signature_Int!!::class.simpleName)
 
@@ -58,6 +63,32 @@ class MenuActivity : AppCompatActivity() {
                     runOnUiThread{
                         nomNettoyeur=ok?.get(0)?.textContent
                         println("SUCCESS with nom nettoyeur = $nomNettoyeur ")
+                    }
+                }
+            }.start()
+        }
+
+        btn_stat_nettoyeur.setOnClickListener{
+            Thread {
+
+                var wsStatNettoyeur = WebServiceStatNettoyeur(session_Int!!,signature_Int!!)
+                val ok: ArrayList<Node>? = wsStatNettoyeur.call()
+                var taille : Int? = ok?.size
+                if (taille == 0) runOnUiThread {
+                    Toast.makeText(
+                        this,
+                        "Erreur la creation nettoyeur",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                else{
+                    runOnUiThread{
+                        nomNettoyeur=ok?.get(0)?.textContent
+                        value=ok?.get(1)?.textContent?.toInt()
+                        pos_lon=ok?.get(0)?.textContent?.toDouble()
+                        pos_lat=ok?.get(0)?.textContent?.toDouble()
+                        status=ok?.get(0)?.textContent
+                        println("SUCCESS with nom nettoyeur = $nomNettoyeur, value = $value, pos_lon = $pos_lon, pos_lat = $pos_lat and status = $status")
                     }
                 }
             }.start()
