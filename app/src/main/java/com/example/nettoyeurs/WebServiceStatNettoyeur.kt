@@ -28,7 +28,7 @@ class WebServiceStatNettoyeur(val session: Int,val signature: Int) {
                 val nlStatus : NodeList = xml.getElementsByTagName("STATUS")
                 val nodeStatus : Node = nlStatus.item(0)
                 val status : String = nodeStatus.textContent
-                Log.d(TAG, "Thread new connection : status $status")
+                Log.d(TAG, "Thread new stats nettoyeur : status $status")
 
                 val params: ArrayList<Node> = ArrayList()
 
