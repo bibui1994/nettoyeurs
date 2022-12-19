@@ -61,9 +61,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }.start()
-
-
-                //startActivity(intent)
             }
         }
     }

@@ -1,9 +1,15 @@
 package com.example.nettoyeurs
 
+import android.Manifest
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -11,12 +17,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.SettingsClient
 import org.w3c.dom.Node
 
 
 class MenuActivity : AppCompatActivity() {
 
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+
+    var session : String? = null
+    var signature: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,53 +35,18 @@ class MenuActivity : AppCompatActivity() {
         val btn_stat_nettoyeur = findViewById<View>(R.id.btn_stat_nettoyeur)
         val btn_stat_equipe = findViewById<View>(R.id.btn_stat_equipe)
 
-        var session : String? = intent.getStringExtra("EXTRA_SESSION")
-        var signature: String? =intent.getStringExtra("EXTRA_SIGNATURE")
-
-        var session_Int:Int? = session?.toInt()
-        //var signature_Int:Int? = Integer.parseInt(signature)
-        var signature_Int:Int? = Integer.valueOf(signature)
-
-        var nomNettoyeur: String?
-        var value : Int?
-        var pos_lon : Double?
-        var pos_lat : Double?
-        var status : String?
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
+        session = intent.getStringExtra("EXTRA_SESSION")
+        signature =intent.getStringExtra("EXTRA_SIGNATURE").toString()
+
         btn_creer.setOnClickListener{
-
-            println("EXTRA SESSION: " + session_Int + session_Int!!::class.simpleName )
-            println("EXTRA SIGNATURE: " + signature_Int + signature_Int!!::class.simpleName)
-
-            Thread {
-                checkPermissions()
-                var longitude : Double = checkPermissions()[0]
-                var latitude : Double = checkPermissions()[1]
-                var wsCreer = WebServiceCreer(session_Int,signature_Int,longitude,latitude)
-                val ok: ArrayList<Node>? = wsCreer.call()
-                var taille : Int? = ok?.size
-                if (taille == 0) runOnUiThread {
-                    Toast.makeText(
-                        this,
-                        "Erreur la creation nettoyeur",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-                else{
-                    runOnUiThread{
-                        nomNettoyeur=ok?.get(0)?.textContent
-                        println("SUCCESS with nom nettoyeur = $nomNettoyeur ")
-                    }
-                }
-            }.start()
+            getCurrentLocation()
         }
 
         btn_stat_nettoyeur.setOnClickListener{
             Thread {
-
-                var wsStatNettoyeur = WebServiceStatNettoyeur(session_Int!!,signature_Int!!)
+                var wsStatNettoyeur = WebServiceStatNettoyeur(session?.toInt()!!,signature?.toInt()!!)
                 val ok: ArrayList<Node>? = wsStatNettoyeur.call()
                 var taille : Int? = ok?.size
                 if (taille == 0) runOnUiThread {
@@ -83,45 +58,95 @@ class MenuActivity : AppCompatActivity() {
                 }
                 else{
                     runOnUiThread{
-                        nomNettoyeur=ok?.get(0)?.textContent
-                        value=ok?.get(1)?.textContent?.toInt()
-                        pos_lon=ok?.get(0)?.textContent?.toDouble()
-                        pos_lat=ok?.get(0)?.textContent?.toDouble()
-                        status=ok?.get(0)?.textContent
+                        var nomNettoyeur =ok?.get(0)?.textContent
+                        var value = ok?.get(1)?.textContent?.toInt()
+                        var pos_lon = ok?.get(2)?.textContent?.toDouble()
+                        var pos_lat = ok?.get(3)?.textContent?.toDouble()
+                        var status = ok?.get(4)?.textContent
                         println("SUCCESS with nom nettoyeur = $nomNettoyeur, value = $value, pos_lon = $pos_lon, pos_lat = $pos_lat and status = $status")
                     }
                 }
             }.start()
         }
-
     }
 
-    private fun checkPermissions() : ArrayList<Double>{
-        var arrayCheckPermission : ArrayList<Double> = ArrayList()
-        if(ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, arrayOf(ACCESS_COARSE_LOCATION), 1)
-        }else{
-            arrayCheckPermission = getLocations()
-        }
-        return arrayCheckPermission
-    }
+    private fun getCurrentLocation() {
+        if (checkPermissions()){
+            if(isLocationEnabled()){
 
-    @SuppressLint("MissingPermission")
-    private fun getLocations() : ArrayList<Double> {
-        var arrayLocation : ArrayList<Double> = ArrayList()
-        fusedLocationProviderClient.lastLocation.addOnSuccessListener {
-            println("it : $it")
-            if (it == null){
-                Toast.makeText(this, "Sorry Can't get Location", Toast.LENGTH_LONG).show()
-            }else it.apply{
-                var lat = it.latitude
-                var lon = it.longitude
-                println("Latitude : $lat, Longitude : $lon")
-                arrayLocation.add(lon)
-                arrayLocation.add(lat)
+                if (ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        this,
+                        ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    requestPermission()
+                    //return
+                }
+                fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
+                    val location : Location? = task.result
+                    println("location : $location")
+                    if (location == null){
+                        Toast.makeText(this, "Sorry Can't get Location", Toast.LENGTH_LONG).show()
+                    }else {
+                        var lat = location.latitude
+                        var lon = location.longitude
+                        println("Latitude : $lat, Longitude : $lon")
+
+                        Thread {
+
+                            var wsCreer = WebServiceCreer(session!!.toInt(),signature!!.toInt(),lon,lat)
+                            val ok: ArrayList<Node>? = wsCreer.call()
+                            var taille : Int? = ok?.size
+                            if (taille == 0) runOnUiThread {
+                                Toast.makeText(
+                                    this,
+                                    "Erreur la creation nettoyeur",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                            else{
+                                runOnUiThread{
+                                    var nomNettoyeur : String? = ok?.get(0)?.textContent
+                                    println("SUCCESS with nom nettoyeur = $nomNettoyeur ")
+                                }
+                            }
+                        }.start()
+                    }
+                }
+
+            }else{
+                //setting open here
+                Toast.makeText(this, "Turn on location", Toast.LENGTH_SHORT).show()
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
             }
+        }else{
+            // request permissions here
+            requestPermission()
         }
-        return arrayLocation
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
+    }
+
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(this,
+            arrayOf(ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), 1)
+
+    }
+
+    private fun checkPermissions(): Boolean {
+        if(ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION)
+        == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED){
+
+            return true
+        }
+            return false
     }
 
     override fun onRequestPermissionsResult(
@@ -134,7 +159,8 @@ class MenuActivity : AppCompatActivity() {
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 if(ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
                     Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
-                    getLocations()
+                    println("The permission has been granted")
+                    getCurrentLocation()
                 }
                 else{
                     Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
@@ -142,6 +168,4 @@ class MenuActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }
