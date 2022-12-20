@@ -45,7 +45,7 @@ class MenuActivity : AppCompatActivity() {
             getCurrentLocation()
         }
 
-        // button for the chat must now appear
+        // button for the chat must appear now
         btn_chat.setOnClickListener{
             val intent_chat = Intent(this, ChatActivity::class.java)
             intent_chat.also {
