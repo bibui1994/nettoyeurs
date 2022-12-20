@@ -8,14 +8,14 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 
-class WebServiceLastMSG {
+class WebServiceLastMSG(val session: Int,val signature: Long) {
 
     val TAG = "WSLastMessages"
 
     /// à ne pas exécuter dans le thread principal
     fun call(): ArrayList<Message>? {
         return try {
-            val url = URL("http://51.68.124.144/ws_chat/last_msg.php")
+            val url = URL("http://51.68.124.144/nettoyeurs_srv/last_msgs.php?session=$session&signature=$signature")
             val cnx = url.openConnection()
             val `in` = cnx.getInputStream()
             val dbf = DocumentBuilderFactory.newInstance()
@@ -25,11 +25,13 @@ class WebServiceLastMSG {
             val nodeStatus = nl.item(0)
             val status = nodeStatus.textContent
             Log.d(TAG, "Thread last msg : status $status")
+
             if (!status.startsWith("OK")) return null
             nl = xml.getElementsByTagName("CONTENT")
             val nodeContent = nl.item(0)
             val messagesXML = nodeContent.childNodes
             val aAjouter = ArrayList<Message>()
+
             for (i in 0 until messagesXML.length) {
                 val message = messagesXML.item(i)
                 aAjouter.add(parseMessage(message)!!)
@@ -63,7 +65,7 @@ class WebServiceLastMSG {
         assert(stringDate != null)
         var date: Date? = null
         date = try {
-            formatter.parse(stringDate)
+            formatter.parse(stringDate!!)
         } catch (e: ParseException) {
             e.printStackTrace()
             return null

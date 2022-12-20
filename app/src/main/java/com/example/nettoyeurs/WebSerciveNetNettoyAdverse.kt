@@ -6,21 +6,19 @@ import org.w3c.dom.NodeList
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
-class WebServiceStatNettoyeur(val session: Int,val signature: Long) {
+class WebSerciveNetNettoyAdverse(val session: Int,val signature: Long, val net_id:Int) {
 
-    val TAG = "WSStatNettoyeur"
+    val TAG = "WSNetNettoyeurAdverse"
 
     fun call(): ArrayList<Node>? {
-        if (session == null || signature == null) {
+        if (session == null || signature == null || net_id == null) {
             return null
         } else {
             try {
                 val url =
-                    URL("http://51.68.124.144/nettoyeurs_srv/stats_nettoyeur.php?session=$session&signature=$signature")
+                    URL("http://51.68.124.144/nettoyeurs_srv/frappe_net.php?session=$session&signature=$signature&net_id=$net_id")
                 val cnx = url.openConnection()
-                println("IT MUST WORK !!!!")
                 val `in` = cnx.getInputStream()
-                println("IT MUST WORK nowwwww!!!!")
                 val dbf = DocumentBuilderFactory.newInstance()
                 val db = dbf.newDocumentBuilder()
 
@@ -28,7 +26,7 @@ class WebServiceStatNettoyeur(val session: Int,val signature: Long) {
                 val nlStatus : NodeList = xml.getElementsByTagName("STATUS")
                 val nodeStatus : Node = nlStatus.item(0)
                 val status : String = nodeStatus.textContent
-                Log.d(TAG, "Thread new stats nettoyeur : status $status")
+                Log.d(TAG, "Thread nettoyeur adverse : status $status")
 
                 val params: ArrayList<Node> = ArrayList()
 

@@ -7,7 +7,7 @@ import org.w3c.dom.NodeList
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
-class WebServiceCreer(val session: Int,val signature: Int,val lon: Double, val lat: Double) {
+class WebServiceCreer(val session: Int,val signature: Long,val lon: Double, val lat: Double) {
     val TAG = "WSCreer"
 
     fun call(): ArrayList<Node>? {
