@@ -39,7 +39,7 @@ class MenuActivity : AppCompatActivity() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         session = intent.getStringExtra("EXTRA_SESSION")
-        signature =intent.getStringExtra("EXTRA_SIGNATURE").toString()
+        signature =intent.getStringExtra("EXTRA_SIGNATURE")
 
         btn_creer.setOnClickListener{
             getCurrentLocation()
@@ -79,6 +79,29 @@ class MenuActivity : AppCompatActivity() {
                 }
             }.start()
         }
+        btn_stat_equipe.setOnClickListener{
+            Thread {
+                var wsStatEquipes = WebServiceStatEquipes(session?.toInt()!!,signature?.toInt()!!)
+                val ok: ArrayList<Node>? = wsStatEquipes.call()
+                var taille : Int? = ok?.size
+                if (taille == 0) runOnUiThread {
+                    Toast.makeText(
+                        this,
+                        "Erreur la creation nettoyeur",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                else{
+                    runOnUiThread{
+                        var value = ok?.get(0)?.textContent?.toInt()
+                        var adv_value = ok?.get(1)?.textContent?.toDouble()
+                        var active_membre = ok?.get(2)?.textContent?.toInt()
+                        println("SUCCESS with value= $value, adv_value = $adv_value, active_membre = $active_membre")
+                    }
+                }
+            }.start()
+        }
+
     }
 
     private fun getCurrentLocation() {
