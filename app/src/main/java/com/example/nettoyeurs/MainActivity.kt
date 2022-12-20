@@ -32,6 +32,9 @@ class MainActivity : AppCompatActivity() {
                 //envoyez et verifier id ,mdp sur server
                 var login : String = votre_id.text.toString() // hlewhe
                 //var passwd : String = mdp.text.toString() // jd£m/4*sU&
+//                login: mtran
+//
+//                passwd: n73/§fg8E*
                 //hashing mdp
                 var mdpHash : String = mdp.text.toString().sha256()
                 println("login $login passwd $mdpHash  !")
@@ -49,6 +52,8 @@ class MainActivity : AppCompatActivity() {
                             Toast.LENGTH_LONG).show()
                     } else {
                         runOnUiThread {
+//                            session  = ok?.get(0)?.textContent?.trim()?.filter { it.isLetterOrDigit() }
+//                            signature= ok?.get(1)?.textContent?.trim()?.filter { it.isLetterOrDigit() }
                             session  = ok?.get(0)?.textContent?.trim()?.filter { it.isLetterOrDigit() }
                             signature= ok?.get(1)?.textContent?.trim()?.filter { it.isLetterOrDigit() }
 
