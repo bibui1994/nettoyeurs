@@ -34,6 +34,7 @@ class MenuActivity : AppCompatActivity() {
         val btn_creer = findViewById<View>(R.id.btn_creer)
         val btn_stat_nettoyeur = findViewById<View>(R.id.btn_stat_nettoyeur)
         val btn_stat_equipe = findViewById<View>(R.id.btn_stat_equipe)
+        val btn_chat = findViewById<View>(R.id.btn_chat)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -44,9 +45,18 @@ class MenuActivity : AppCompatActivity() {
             getCurrentLocation()
         }
 
+        btn_chat.setOnClickListener{
+            val intent_chat = Intent(this, ChatActivity::class.java)
+            intent_chat.also {
+                it.putExtra("EXTRA_SESSION",session)
+                it.putExtra("EXTRA_SIGNATURE",signature)
+                startActivity(intent_chat)
+            }
+        }
+
         btn_stat_nettoyeur.setOnClickListener{
             Thread {
-                var wsStatNettoyeur = WebServiceStatNettoyeur(session?.toInt()!!,signature?.toInt()!!)
+                var wsStatNettoyeur = WebServiceStatNettoyeur(session!!.toInt(),signature!!.toLong())
                 val ok: ArrayList<Node>? = wsStatNettoyeur.call()
                 var taille : Int? = ok?.size
                 if (taille == 0) runOnUiThread {
@@ -63,7 +73,8 @@ class MenuActivity : AppCompatActivity() {
                         var pos_lon = ok?.get(2)?.textContent?.toDouble()
                         var pos_lat = ok?.get(3)?.textContent?.toDouble()
                         var status = ok?.get(4)?.textContent
-                        println("SUCCESS with nom nettoyeur = $nomNettoyeur, value = $value, pos_lon = $pos_lon, pos_lat = $pos_lat and status = $status")
+                        println("SUCCESS with nom nettoyeur = $nomNettoyeur, " +
+                                "value = $value, pos_lon = $pos_lon, pos_lat = $pos_lat and status = $status")
                     }
                 }
             }.start()
@@ -75,7 +86,8 @@ class MenuActivity : AppCompatActivity() {
             if(isLocationEnabled()){
 
                 if (ActivityCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(
                         this,
                         ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 ) {
@@ -94,7 +106,7 @@ class MenuActivity : AppCompatActivity() {
 
                         Thread {
 
-                            var wsCreer = WebServiceCreer(session!!.toInt(),signature!!.toInt(),lon,lat)
+                            var wsCreer = WebServiceCreer(session!!.toInt(), signature!!.toLong(), lon, lat)
                             val ok: ArrayList<Node>? = wsCreer.call()
                             var taille : Int? = ok?.size
                             if (taille == 0) runOnUiThread {

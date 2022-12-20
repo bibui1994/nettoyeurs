@@ -6,24 +6,23 @@ import java.net.URL
 import java.net.URLEncoder
 import javax.xml.parsers.DocumentBuilderFactory
 
-class WebServiceNewMSG {
+class WebServiceNewMSG(private val session: Int, private val signature: Long, private val message: String) {
 
-    val TAG = "WSNewMessage"
-    private var mAuteur: String? = null
+    private val TAG = "WSNewMessage"
     private var mContenu: String? = null
 
-    fun WebServiceNewMSG(auteur: String?, contenu: String?) {
+
+
+    fun call(): Boolean {
         try {
-            mAuteur = URLEncoder.encode(auteur, "UTF-8")
-            mContenu = URLEncoder.encode(contenu, "UTF-8")
+            mContenu = URLEncoder.encode(message, "UTF-8")
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
         }
-    }
 
-    fun call(): Boolean {
         return if (mContenu == null) false else try {
-            val url = URL("http://51.68.124.144/ws_chat/new_msg.php?author=$mAuteur&msg=$mContenu")
+
+            val url = URL("http://51.68.124.144/nettoyeurs_srv/new_msg.php?session=$session&signature=$signature&message=$mContenu")
             val cnx = url.openConnection()
             val `in` = cnx.getInputStream()
             val dbf = DocumentBuilderFactory.newInstance()
@@ -32,7 +31,7 @@ class WebServiceNewMSG {
             val nl = xml.getElementsByTagName("STATUS")
             val nodeStatus = nl.item(0)
             val status = nodeStatus.textContent
-            Log.d(TAG, "Thread last msg : status $status")
+            Log.d(TAG, "Thread new msg : status $status")
             status.startsWith("OK")
         } catch (e: Exception) {
             false

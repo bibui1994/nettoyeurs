@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:orientation="vertical"
+    tools:context=".ChatActivity">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/mainNoteFrag"
+        android:name="com.example.nettoyeurs.MessagesFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1"
+        tools:layout="@layout/fragment_message_list"/>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/mainNoteDetailFrag"
+        android:name="com.example.nettoyeurs.MessageDetailsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1"
+        tools:layout="@layout/fragment_message_detail"/>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="65dp">
+
+        <Button
+            android:id="@+id/buttonCreer"
+            android:layout_width="150dp"
+            android:layout_height="57dp"
+            android:layout_weight="1"
+            android:text="Créer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.815" />
+
+        <Button
+            android:id="@+id/buttonSuppr"
+            android:layout_width="150dp"
+            android:layout_height="57dp"
+            android:layout_weight="1"
+            android:text="Supprimer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.789" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

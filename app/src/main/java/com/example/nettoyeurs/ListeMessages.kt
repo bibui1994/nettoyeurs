@@ -44,6 +44,12 @@ class ListeMessages {
         return listmsg.size
     }
 
+    fun deleteMessages(): Boolean {
+        if (listmsg.isEmpty()) return false
+        listmsg.clear()
+        return true
+    }
+
     init {
         ajouteMessage(1, Calendar.getInstance().time,"Riri", "Bonjour bonjour")
         ajouteMessage(2, Calendar.getInstance().time,"Fifi", "Broudaf, zog-zog ! ")
