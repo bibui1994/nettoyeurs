@@ -7,13 +7,37 @@
     tools:context=".MainActivity">
 
 
+    <Button
+        android:id="@+id/btn_test_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test gg map"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.693" />
+
+    <Button
+        android:id="@+id/btn_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test navigation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.587" />
+
     <EditText
         android:id="@+id/votre_id"
         android:layout_width="259dp"
-        android:layout_height="43dp"
+        android:layout_height="48dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="Votre ID"
+        android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.513"
@@ -24,10 +48,10 @@
     <EditText
         android:id="@+id/mdp"
         android:layout_width="264dp"
-        android:layout_height="44dp"
+        android:layout_height="48dp"
         android:ems="10"
-        android:inputType="textPassword"
         android:hint="Votre MDP"
+        android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -46,4 +70,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.48" />
+
+    <TextView
+        android:id="@+id/erreur_connexion"
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:textAlignment="center"
+        android:text=""
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.128" />
 </androidx.constraintlayout.widget.ConstraintLayout>

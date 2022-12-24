@@ -7,17 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".MenuActivity">
 
-    <Button
-        android:id="@+id/btn_stat_equipe"
-        android:layout_width="332dp"
-        android:layout_height="58dp"
-        android:text="Stats equipe"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.682" />
+
 
     <Button
         android:id="@+id/btn_creer"
@@ -32,6 +22,17 @@
         app:layout_constraintVertical_bias="0.242" />
 
     <Button
+        android:id="@+id/btn_stat_nettoyeur"
+        android:layout_width="332dp"
+        android:layout_height="58dp"
+        android:text="Stats  nettoyeur"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.62"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35" />
+    <Button
         android:id="@+id/btn_chat"
         android:layout_width="332dp"
         android:layout_height="58dp"
@@ -42,16 +43,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.399" />
-
     <Button
-        android:id="@+id/btn_stat_nettoyeur"
+        android:id="@+id/btn_stat_equipe"
         android:layout_width="332dp"
         android:layout_height="58dp"
-        android:text="Stats  nettoyeur"
+        android:text="Stats equipe"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.54" />
+        app:layout_constraintVertical_bias="0.499" />
+
+    <Button
+        android:id="@+id/btn_mode_voyage"
+        android:layout_width="168dp"
+        android:layout_height="63dp"
+        android:text="Entrer mode voyage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.744" />
+
+    <Button
+        android:id="@+id/btn_mise_position"
+        android:layout_width="168dp"
+        android:layout_height="63dp"
+        android:text="MISE POSITION"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.876"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.745" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view"
+    android:background="@android:color/white">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_stat_nettoyeur"
+            android:icon="@drawable/ic_baseline_person_24"
+            android:title="Stat Nettoyeur" />
+        <item
+            android:id="@+id/nav_stat_equipe"
+            android:icon="@drawable/ic_baseline_groups_24"
+            android:title="Stat D'Equipe" />
+    </group>
+
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/nav_remise_jeu"
+                android:icon="@drawable/ic_baseline_play_circle_24"
+                android:title="Remise en jeu du nettoyeur"
+                />
+            <item
+                android:id="@+id/nav_map"
+                android:icon="@drawable/ic_baseline_map_24"
+                android:title="Map" />
+            <item
+                android:id="@+id/nav_position"
+                android:icon="@drawable/ic_baseline_autorenew_24"
+                android:title="Mise en position" />
+            <item
+                android:id="@+id/nav_voyage"
+                android:icon="@drawable/ic_baseline_voyage_24"
+                android:title="Mise en mode Voyage" />
+            <item
+                android:id="@+id/nav_chat"
+                android:icon="@drawable/icons8_chat_box_96__xxxhdpi_"
+                android:title="Chat" />
+
+        </menu>
+    </item>
+
+</menu>

@@ -13,4 +13,17 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Theme.Nettoyeurs.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Drawer" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">#FFFFFF80</item>
+    </style>
+
+
+    <style name="Theme.Nettoyeurs.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Nettoyeurs.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

@@ -27,25 +27,29 @@ class MenuActivity : AppCompatActivity() {
 
     var session : String? = null
     var signature: String? = null
+    var mode:Int?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
-        val btn_creer = findViewById<View>(R.id.btn_creer)
+
         val btn_stat_nettoyeur = findViewById<View>(R.id.btn_stat_nettoyeur)
         val btn_stat_equipe = findViewById<View>(R.id.btn_stat_equipe)
+        val btn_mode_voyage = findViewById<View>(R.id.btn_mode_voyage)
+        val btn_mise_position = findViewById<View>(R.id.btn_mise_position)
         val btn_chat = findViewById<View>(R.id.btn_chat)
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         session = intent.getStringExtra("EXTRA_SESSION")
         signature =intent.getStringExtra("EXTRA_SIGNATURE")
-
-        btn_creer.setOnClickListener{
-            getCurrentLocation()
-        }
+        println("SESSION MAIN MENU: " + session + "SIGNATURE MAIN MENU: " + signature)
 
         // button for the chat must appear now
+        //Bouton MISE POSITION
+        btn_mise_position.setOnClickListener{
+            getPosition()
+        }
         btn_chat.setOnClickListener{
             val intent_chat = Intent(this, ChatActivity::class.java)
             intent_chat.also {
@@ -54,10 +58,10 @@ class MenuActivity : AppCompatActivity() {
                 startActivity(intent_chat)
             }
         }
-
+        //Bouton STAT NETTOYER
         btn_stat_nettoyeur.setOnClickListener{
             Thread {
-                var wsStatNettoyeur = WebServiceStatNettoyeur(session!!.toInt(),signature!!.toLong())
+                var wsStatNettoyeur = WebServiceStatNettoyeur(session?.toInt()!!,signature?.toLong()!!)
                 val ok: ArrayList<Node>? = wsStatNettoyeur.call()
                 var taille : Int? = ok?.size
                 if (taille == 0) runOnUiThread {
@@ -74,15 +78,15 @@ class MenuActivity : AppCompatActivity() {
                         var pos_lon = ok?.get(2)?.textContent?.toDouble()
                         var pos_lat = ok?.get(3)?.textContent?.toDouble()
                         var status = ok?.get(4)?.textContent
-                        println("SUCCESS with nom nettoyeur = $nomNettoyeur, " +
-                                "value = $value, pos_lon = $pos_lon, pos_lat = $pos_lat and status = $status")
+                        println("SUCCESS with nom nettoyeur = $nomNettoyeur, value = $value, pos_lon = $pos_lon, pos_lat = $pos_lat and status = $status")
                     }
                 }
             }.start()
         }
+        //Bouton STAT EQUIPE
         btn_stat_equipe.setOnClickListener{
             Thread {
-                var wsStatEquipes = WebServiceStatEquipes(session?.toInt()!!,signature?.toInt()!!)
+                var wsStatEquipes = WebServiceStatEquipes(session?.toInt()!!,signature?.toLong()!!)
                 val ok: ArrayList<Node>? = wsStatEquipes.call()
                 var taille : Int? = ok?.size
                 if (taille == 0) runOnUiThread {
@@ -102,16 +106,37 @@ class MenuActivity : AppCompatActivity() {
                 }
             }.start()
         }
+        //Bouton MODE VOYAGE
+        btn_mode_voyage.setOnClickListener{
+            Thread {
+                var wsModeVoyage = WebServiceModeVoyage(session?.toInt()!!,signature?.toLong()!!)
+                val ok: ArrayList<Node>? = wsModeVoyage.call()
+                var taille : Int? = ok?.size
+                if (taille == 0) runOnUiThread {
+                    Toast.makeText(
+                        this,
+                        "Erreur MODE VOYAGE",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                else{
+                    runOnUiThread{
+                        var status = ok?.get(0)?.textContent
+                        println("SUCCESS with status= $status")
+                    }
+                }
+            }.start()
+        }
 
     }
+
 
     private fun getCurrentLocation() {
         if (checkPermissions()){
             if(isLocationEnabled()){
 
                 if (ActivityCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                         this,
                         ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 ) {
@@ -130,7 +155,7 @@ class MenuActivity : AppCompatActivity() {
 
                         Thread {
 
-                            var wsCreer = WebServiceCreer(session!!.toInt(), signature!!.toLong(), lon, lat)
+                            var wsCreer = WebServiceCreer(session!!.toInt(),signature!!.toLong(),lon,lat)
                             val ok: ArrayList<Node>? = wsCreer.call()
                             var taille : Int? = ok?.size
                             if (taille == 0) runOnUiThread {
@@ -143,7 +168,13 @@ class MenuActivity : AppCompatActivity() {
                             else{
                                 runOnUiThread{
                                     var nomNettoyeur : String? = ok?.get(0)?.textContent
-                                    println("SUCCESS with nom nettoyeur = $nomNettoyeur ")
+                                    if (nomNettoyeur == null){
+                                        println("Votre charactère déjà crée !")
+                                    }
+                                    else{
+                                        println("SUCCESS with nom nettoyeur = $nomNettoyeur ")
+                                    }
+
                                 }
                             }
                         }.start()
@@ -161,6 +192,7 @@ class MenuActivity : AppCompatActivity() {
             requestPermission()
         }
     }
+
 
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -196,7 +228,16 @@ class MenuActivity : AppCompatActivity() {
                 if(ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
                     Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
                     println("The permission has been granted")
-                    getCurrentLocation()
+                    if(mode==0){
+                        getCurrentLocation()
+                    }
+                    else if(mode ==1){
+                        getPosition()
+                    }
+                    else{
+                        println("ERREUR MODE NULLLLLLLL")
+                    }
+
                 }
                 else{
                     Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
@@ -204,4 +245,61 @@ class MenuActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun getPosition() {
+        println("into getPosition !!")
+        if (checkPermissions()){
+            if(isLocationEnabled()){
+
+                if (ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        this,
+                        ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    requestPermission()
+                    //return
+                }
+                fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
+                    val location : Location? = task.result
+                    println("location : $location")
+                    if (location == null){
+                        Toast.makeText(this, "Sorry Can't get Location", Toast.LENGTH_LONG).show()
+                    }else {
+                        var lat = location.latitude
+                        var lon = location.longitude
+                        println("Latitude : $lat, Longitude : $lon")
+
+                        Thread {
+
+                            var wsMisePosition = WebServiceMisePosition(session!!.toInt(),signature!!.toLong(),lon,lat)
+                            val ok: Detection? = wsMisePosition.call()
+
+                            if (ok==null) runOnUiThread {
+                                Toast.makeText(
+                                    this,
+                                    "Erreur MISE POSITION",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                            else{
+                                runOnUiThread{
+
+                                }
+                            }
+                        }.start()
+                    }
+                }
+
+            }else{
+                //setting open here
+                Toast.makeText(this, "Turn on location", Toast.LENGTH_SHORT).show()
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
+            }
+        }else{
+            // request permissions here
+            requestPermission()
+        }
+    }
+
 }

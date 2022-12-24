@@ -6,7 +6,7 @@ import org.w3c.dom.NodeList
 import java.net.URL
 import javax.xml.parsers.DocumentBuilderFactory
 
-class WebServiceStatEquipes(val session: Int,val signature: Int) {
+class WebServiceStatEquipes(val session: Int,val signature: Long) {
     val TAG = "WSStatEquipes"
 
     fun call(): ArrayList<Node>? {

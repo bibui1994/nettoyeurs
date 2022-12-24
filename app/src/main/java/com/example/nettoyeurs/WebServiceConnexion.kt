@@ -29,23 +29,25 @@ class WebServiceConnexion(val login: String, val mdpHash: String) {
                 Log.d(TAG, "Thread new connection : status $status")
 
                 val params: ArrayList<Node> = ArrayList()
+                params.add(nodeStatus)
+                if (!status.startsWith("OK")){
 
-                if (!status.startsWith("OK"))
-                    return null
+                    return params
+                }
+
 
                 val nlParams : NodeList = xml.getElementsByTagName("PARAMS")
                 val nodeParams : Node = nlParams.item(0)
                 val paramsXML : NodeList = nodeParams.childNodes
 
                 var len :Int? = paramsXML?.length
-                println("table paramsXML.size = $len")
-
+//                println("table paramsXML.size = $len")
                 for (i in 0..paramsXML.length-1) {
                     println(paramsXML.item(i).textContent)
                     params.add(paramsXML.item(i))
                 }
                 var lenParam :Int = params.size
-                println("table params.size = $lenParam")
+//                println("table params.size = $lenParam")
                 return params
 
             } catch (e: Exception) {

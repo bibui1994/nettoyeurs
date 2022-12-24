@@ -10,7 +10,6 @@
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
-        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -35,6 +34,30 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC8JlFmCCU40CN0b3Wbi0NiQhbRuGmnoTE" />
 
+
+        <activity
+            android:name=".MenuNavigationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_menu_navigation"
+            android:theme="@style/Theme.Nettoyeurs.NoActionBar">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".CreerJoueurActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".WebServiceModeVoyage"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".EditMessageActivity"
             android:exported="false">
